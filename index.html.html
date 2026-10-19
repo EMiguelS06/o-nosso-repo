@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Votação de ideias · JUNITEC</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:#175FAA;color:#F6F6F6;font-family:'Montserrat',system-ui,sans-serif;line-height:1.5}
+.pagina{max-width:760px;margin:0 auto;padding:28px 18px 24px}
+h1{margin:0;font-size:30px;font-weight:700}
+h2.az{margin:0 0 12px;font-size:22px;font-weight:700}
+.barra{width:120px;height:6px;border-radius:6px;background:#74D1EF;margin:12px 0 14px}
+.intro{color:#E2EEFF;margin:0 0 20px}
+button,input,textarea{font:inherit}
+.btn{border:0;border-radius:8px;padding:10px 16px;font-weight:600;cursor:pointer;background:#74D1EF;color:#0944A1}
+.btn.sec{background:#fff;color:#175FAA;border:1px solid #C9DAEE}
+.btn.mini{padding:6px 12px;font-size:13px}
+.btn:disabled{background:#C9DAEE;color:#3D4F6B;cursor:not-allowed}
+.btn:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible,.rk button:focus-visible{outline:3px solid #74D1EF;outline-offset:2px}
+.cartao input:focus-visible,.cartao textarea:focus-visible,.cartao .btn:focus-visible,.cartao .rk button:focus-visible,.cartao summary:focus-visible{outline-color:#0944A1}
+input,textarea{width:100%;color:#3D4F6B;background:#fff;border:1px solid #C9DAEE;border-radius:8px;padding:12px}
+textarea{resize:none;min-height:48px}
+/* Quem és */
+.pessoa{border:1px solid #4D85C2;border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.pessoa .t{flex:1;min-width:180px;font-weight:600}
+.pessoa input{flex:1;min-width:160px}
+.pessoa .link{background:none;border:0;color:#E2EEFF;text-decoration:underline;cursor:pointer;font-size:13px;padding:4px}
+.pessoa.destaque{animation:pisca .6s 2}
+@keyframes pisca{50%{background:#4D85C2}}
+/* Cartões */
+.cartao{background:#F6F6F6;color:#3D4F6B;border-radius:12px;padding:16px;margin-bottom:12px}
+.cartao h2{margin:0 0 8px;font-size:17px;font-weight:700;color:#175FAA}
+.novo .linha{display:flex;gap:10px;align-items:flex-start}
+.novo .linha textarea{flex:1}
+.dica{font-size:13px;margin:8px 0 0}
+.ferr{display:flex;justify-content:space-between;align-items:center;margin:20px 0 12px;gap:8px}
+.ferr h2{margin:0;font-size:20px;font-weight:700}
+details.mais{position:relative}
+details.mais summary{list-style:none;cursor:pointer;border:1px solid #4D85C2;border-radius:8px;padding:8px 14px;font-weight:600}
+details.mais summary::-webkit-details-marker{display:none}
+details.mais .menu{position:absolute;right:0;top:44px;background:#F6F6F6;border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px;min-width:190px;z-index:5}
+.menu .btn{text-align:left}
+/* Ideia */
+.ideia.escolhida{outline:3px solid #74D1EF}
+.ideia .topo{display:flex;gap:12px;align-items:flex-start}
+.corpo{flex:1;min-width:0}
+.corpo h3{margin:0;font-size:16px;font-weight:700;color:#175FAA;overflow-wrap:anywhere}
+.corpo p{margin:4px 0 0;overflow-wrap:anywhere}
+.meta{font-size:12px;margin-top:4px}
+.tag{font-size:11px;font-weight:600;background:#E2EEFF;color:#0944A1;border-radius:6px;padding:2px 8px;margin-left:6px}
+/* Botões 1º 2º 3º */
+.rk{display:flex;gap:6px;flex:none}
+.rk button{width:44px;height:44px;border-radius:8px;border:1px solid #C9DAEE;background:#fff;color:#175FAA;font-weight:700;cursor:pointer}
+.rk button[aria-pressed="true"]{background:#74D1EF;border-color:#74D1EF;color:#0944A1}
+.rk button:disabled{cursor:default;opacity:.45}
+.rk button[aria-pressed="true"]:disabled{opacity:1}
+.acoes{display:flex;gap:8px;align-items:center;margin-top:10px}
+.link2{background:none;border:0;color:#175FAA;font-weight:600;cursor:pointer;padding:4px 0}
+.link2.apagar{color:#3D4F6B;font-weight:400;font-size:13px;margin-left:auto;text-decoration:underline}
+.coment{margin-top:8px;border-top:1px solid #C9DAEE;padding-top:10px}
+.coment .item{background:#fff;border:1px solid #C9DAEE;border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:14px;overflow-wrap:anywhere}
+.coment .item b{color:#175FAA}
+.coment form{display:flex;gap:8px}
+.vazio{text-align:center;color:#E2EEFF;padding:28px 12px;border:1px dashed #4D85C2;border-radius:12px}
+/* Barra do voto (fixa em baixo) */
+.voto{position:sticky;bottom:0;z-index:4;background:#F6F6F6;color:#3D4F6B;border-radius:12px;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));margin-top:16px;border:2px solid #74D1EF}
+.voto .titulo{font-weight:700;color:#175FAA;margin-bottom:8px}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.slot{background:#fff;border:1px solid #C9DAEE;border-radius:8px;padding:6px 8px;font-size:12px;min-width:0}
+.slot b{display:block;color:#175FAA;font-size:13px}
+.slot span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slot.cheio{border-color:#175FAA}
+.voto .linha2{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.voto .linha2 .nota{flex:1;font-size:13px;min-width:140px}
+/* Pódio */
+.podio-sec{margin-top:36px}
+.podio{display:flex;gap:8px;align-items:flex-end;justify-content:center;margin:20px 0 8px}
+.lugar{flex:1;max-width:220px;min-width:0;text-align:center}
+.lugar .nome{font-weight:700;font-size:14px;margin-bottom:4px;overflow-wrap:anywhere}
+.lugar .pts{font-size:13px;color:#E2EEFF;margin-bottom:8px}
+.lugar .pilar{border-radius:8px 8px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:10px;font-weight:800;font-size:34px;line-height:1}
+.lugar .pilar small{font-size:26px;margin-bottom:4px}
+.l1 .pilar{height:150px;background:#74D1EF;color:#0944A1}
+.l2 .pilar{height:110px;background:#F6F6F6;color:#175FAA}
+.l3 .pilar{height:80px;background:#E2EEFF;color:#175FAA}
+.detalhe{text-align:center;font-size:12px;color:#E2EEFF}
+.toast{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#F6F6F6;color:#175FAA;font-weight:600;border-radius:8px;padding:10px 16px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:10;max-width:90%;text-align:center}
+.toast.ver{opacity:1}
+footer{font-size:12px;color:#E2EEFF;margin-top:28px}
+@media (max-width:640px){
+  h1{font-size:24px}
+  .novo .linha{flex-direction:column}
+  .novo .linha .btn{width:100%}
+  .ideia .topo{flex-wrap:wrap}
+  .rk{width:100%}
+  .rk button{flex:1}
+  .coment form{flex-direction:column}
+  .lugar .pilar{font-size:28px}
+}
+</style>
+</head>
+<body>
+<div class="pagina">
+  <h1>Votação de ideias</h1>
+  <div class="barra"></div>
+  <p class="intro">Para os membros de inovação da JUNITEC. Cada pessoa escolhe as suas 3 ideias preferidas, por ordem: 1º lugar vale 3 pontos, 2º vale 2 e 3º vale 1. No fim, as 3 melhores sobem ao pódio.</p>
+
+  <div class="pessoa" id="pessoa"></div>
+
+  <form class="cartao novo" id="formNovo">
+    <h2>Tens uma ideia?</h2>
+    <div class="linha">
+      <textarea id="novo" rows="1" maxlength="2000" placeholder="Escreve a ideia e carrega em Enter" aria-label="Nova ideia"></textarea>
+      <button class="btn" type="submit">Adicionar</button>
+    </div>
+    <p class="dica">Dica: cola várias linhas do brainstorm e cada linha passa a ser uma ideia.</p>
+  </form>
+
+  <div class="ferr">
+    <h2>Ideias</h2>
+    <details class="mais">
+      <summary>Mais opções</summary>
+      <div class="menu">
+        <button class="btn sec mini" id="btnCopiar">Copiar resultado</button>
+        <button class="btn sec mini" id="btnCsv">Exportar CSV</button>
+        <button class="btn sec mini" id="btnVotos">Reiniciar votos</button>
+        <button class="btn sec mini" id="btnExemplo">Repor exemplo</button>
+        <button class="btn sec mini" id="btnLimpar">Apagar tudo</button>
+      </div>
+    </details>
+  </div>
+
+  <div id="lista"></div>
+
+  <!-- O teu voto: fica sempre visível em baixo -->
+  <div class="voto" id="voto"></div>
+
+  <!-- Pódio -->
+  <section class="podio-sec" id="podioSec"></section>
+
+  <footer>Os dados ficam só neste browser. Para juntar os votos do grupo, exporta o CSV. · Feito pela JUNITEC</footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+// ---------- Estado ----------
+var CHAVE = 'junitec-votacao-podio-v3';
+// votos: votos submetidos {nome: [id1º, id2º, id3º]}; rascunhos: escolhas ainda não submetidas
+var estado = { nome: '', ideias: [], votos: {}, rascunhos: {} };
+var editando = false;   // true quando alguém está a alterar um voto já submetido
+var verPodio = false;
+var abertas = {};       // ideias com comentários visíveis
+var PONTOS = [3, 2, 1];
+
+// Ideias e votos de exemplo, marcados como tal
+function exemplo() {
+  estado.ideias = [
+    { id: 1, titulo: 'Guia de onboarding para novos membros', autor: 'Exemplo', feedback: [{ autor: 'Exemplo', texto: 'Boa ideia. Falta definir quem mantém o guia.' }], exemplo: true, criada: 1 },
+    { id: 2, titulo: 'Sessões mensais de feedback com clientes', autor: 'Exemplo', feedback: [], exemplo: true, criada: 2 },
+    { id: 3, titulo: 'Banco de ideias partilhado', autor: 'Exemplo', feedback: [], exemplo: true, criada: 3 },
+    { id: 4, titulo: 'Mentoria entre equipas', autor: 'Exemplo', feedback: [], exemplo: true, criada: 4 }
+  ];
+  estado.votos = { 'Exemplo 1': [1, 2, 3], 'Exemplo 2': [1, 4, 2] };
+  estado.rascunhos = {};
+}
+
+// ---------- Guardar e carregar ----------
+function guardar() { try { localStorage.setItem(CHAVE, JSON.stringify(estado)); } catch (e) {} }
+function carregar() {
+  try {
+    var d = JSON.parse(localStorage.getItem(CHAVE));
+    if (d && Array.isArray(d.ideias) && d.votos && d.rascunhos) { estado = d; return; }
+  } catch (e) {}
+  exemplo();
+}
+
+// ---------- Utilitários ----------
+function $(id) { return document.getElementById(id); }
+function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+var tt;
+function aviso(m) { var t = $('toast'); t.textContent = m; t.classList.add('ver'); clearTimeout(tt); tt = setTimeout(function () { t.classList.remove('ver'); }, 2400); }
+function achar(id) { return estado.ideias.find(function (x) { return x.id === id; }); }
+function precisaNome() {
+  if (estado.nome) return false;
+  var p = $('pessoa'); p.classList.remove('destaque'); void p.offsetWidth; p.classList.add('destaque');
+  var i = p.querySelector('input'); if (i) i.focus();
+  aviso('Primeiro diz-nos o teu nome.');
+  return true;
+}
+
+// ---------- Lógica do voto ----------
+function rascunho() { if (!estado.rascunhos[estado.nome]) estado.rascunhos[estado.nome] = [null, null, null]; return estado.rascunhos[estado.nome]; }
+function jaVotou() { return !!(estado.nome && estado.votos[estado.nome]); }
+function bloqueado() { return jaVotou() && !editando; }
+// Voto que está a ser mostrado ao utilizador atual
+function votoAtual() { return !estado.nome ? [null, null, null] : bloqueado() ? estado.votos[estado.nome] : rascunho(); }
+
+// Atribui o lugar r (1, 2 ou 3) a uma ideia; troca se o lugar já estava ocupado
+function escolher(id, r) {
+  if (precisaNome()) return;
+  if (bloqueado()) { aviso('Já votaste. Usa «Alterar voto» se quiseres mudar.'); return; }
+  var b = rascunho(), pos = b.indexOf(id);
+  if (pos === r - 1) b[pos] = null;            // carregar outra vez retira a escolha
+  else { if (pos >= 0) b[pos] = null; b[r - 1] = id; }
+  guardar(); desenhar();
+}
+function submeter() {
+  var b = rascunho();
+  if (b.indexOf(null) >= 0) { aviso('Falta escolher o 1º, 2º e 3º lugar.'); return; }
+  estado.votos[estado.nome] = b.slice();
+  delete estado.rascunhos[estado.nome];
+  editando = false; verPodio = true;
+  guardar(); desenhar();
+  aviso('Voto submetido. Obrigado!');
+  $('podioSec').scrollIntoView({ behavior: 'smooth' });
+}
+function alterar() { editando = true; estado.rascunhos[estado.nome] = estado.votos[estado.nome].slice(); guardar(); desenhar(); }
+function cancelar() { editando = false; delete estado.rascunhos[estado.nome]; guardar(); desenhar(); }
+
+// ---------- Ideias e feedback ----------
+function adicionar(texto) {
+  var linhas = texto.split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
+  if (!linhas.length) return;
+  linhas.forEach(function (l, k) {
+    estado.ideias.push({ id: Date.now() + k, titulo: l.slice(0, 120), autor: estado.nome || 'Anónimo', feedback: [], exemplo: false, criada: Date.now() + k });
+  });
+  aviso(linhas.length === 1 ? 'Ideia adicionada.' : linhas.length + ' ideias adicionadas.');
+  guardar(); desenhar();
+}
+function comentar(id, texto) {
+  texto = texto.trim();
+  if (!texto || precisaNome()) return;
+  achar(id).feedback.push({ autor: estado.nome, texto: texto.slice(0, 300) });
+  abertas[id] = true; guardar(); desenhar();
+}
+function apagar(id) {
+  if (!window.confirm('Apagar esta ideia? Os votos nela também são retirados.')) return;
+  estado.ideias = estado.ideias.filter(function (x) { return x.id !== id; });
+  [estado.votos, estado.rascunhos].forEach(function (grupo) {
+    Object.keys(grupo).forEach(function (n) { grupo[n] = grupo[n].map(function (v) { return v === id ? null : v; }); });
+  });
+  guardar(); desenhar();
+}
+
+// ---------- Resultados ----------
+// Pontos por ideia, com desempate: mais 1ºs, depois mais 2ºs, depois a mais antiga
+function resultados() {
+  var r = estado.ideias.map(function (i) { return { i: i, p: 0, n: [0, 0, 0] }; });
+  Object.keys(estado.votos).forEach(function (nome) {
+    estado.votos[nome].forEach(function (id, k) {
+      var x = r.find(function (y) { return y.i.id === id; });
+      if (x) { x.p += PONTOS[k]; x.n[k]++; }
+    });
+  });
+  return r.sort(function (a, b) { return b.p - a.p || b.n[0] - a.n[0] || b.n[1] - a.n[1] || a.i.criada - b.i.criada; });
+}
+function nVotos() { return Object.keys(estado.votos).length; }
+function copiar() {
+  var t = 'Pódio de ideias (JUNITEC) – ' + nVotos() + ' voto(s)\n' + resultados().slice(0, 3).map(function (x, n) {
+    return (n + 1) + 'º ' + x.i.titulo + ' – ' + x.p + ' pontos';
+  }).join('\n');
+  try { navigator.clipboard.writeText(t).then(function () { aviso('Resultado copiado.'); }, function () { aviso('Não foi possível copiar.'); }); }
+  catch (e) { aviso('Não foi possível copiar.'); }
+}
+function cel(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }
+function exportarCsv() {
+  var l = [['Posição', 'Ideia', 'Pontos', 'Nº de 1ºs', 'Nº de 2ºs', 'Nº de 3ºs', 'Feedback']];
+  resultados().forEach(function (x, n) {
+    l.push([n + 1, x.i.titulo, x.p, x.n[0], x.n[1], x.n[2], x.i.feedback.map(function (f) { return f.autor + ': ' + f.texto; }).join(' | ')]);
+  });
+  var csv = '\ufeff' + l.map(function (r) { return r.map(cel).join(';'); }).join('\n');
+  try {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    a.download = 'ideias-junitec.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+    aviso('CSV exportado.');
+  } catch (e) { aviso('Exportar não funciona aqui. Usa «Copiar resultado».'); }
+}
+
+// ---------- Interface ----------
+function desenharPessoa() {
+  var p = $('pessoa'); p.innerHTML = '';
+  if (estado.nome) {
+    p.appendChild(el('div', 't', 'Olá, ' + estado.nome + '! ' + (bloqueado() ? 'O teu voto já está registado.' : 'Escolhe o teu 1º, 2º e 3º lugar.')));
+    var b = el('button', 'link', 'Não és tu? Mudar');
+    b.onclick = function () { estado.nome = ''; editando = false; guardar(); desenhar(); };
+    p.appendChild(b);
+  } else {
+    p.appendChild(el('div', 't', 'Primeiro, como te chamas?'));
+    var inp = el('input'); inp.maxLength = 40; inp.placeholder = 'O teu nome'; inp.setAttribute('aria-label', 'O teu nome');
+    var ok = el('button', 'btn', 'Entrar');
+    ok.onclick = function () { if (inp.value.trim()) { estado.nome = inp.value.trim().slice(0, 40); guardar(); desenhar(); } else inp.focus(); };
+    inp.onkeydown = function (e) { if (e.key === 'Enter') ok.onclick(); };
+    p.appendChild(inp); p.appendChild(ok);
+  }
+}
+function cartaoIdeia(i) {
+  var voto = votoAtual(), lugar = voto.indexOf(i.id);
+  var c = el('div', 'cartao ideia' + (lugar >= 0 ? ' escolhida' : ''));
+  var topo = el('div', 'topo');
+  var corpo = el('div', 'corpo');
+  var h = el('h3', null, i.titulo);
+  if (i.exemplo) h.appendChild(el('span', 'tag', 'Exemplo'));
+  corpo.appendChild(h);
+  corpo.appendChild(el('div', 'meta', 'Por ' + i.autor));
+  topo.appendChild(corpo);
+
+  // Botões 1º, 2º, 3º
+  var rk = el('div', 'rk'); rk.setAttribute('role', 'group'); rk.setAttribute('aria-label', 'Escolher lugar para ' + i.titulo);
+  [1, 2, 3].forEach(function (r) {
+    var b = el('button', null, r + 'º');
+    b.setAttribute('aria-pressed', lugar === r - 1);
+    b.setAttribute('aria-label', 'Escolher como ' + r + 'º lugar');
+    b.disabled = bloqueado();
+    b.onclick = function () { escolher(i.id, r); };
+    rk.appendChild(b);
+  });
+  topo.appendChild(rk);
+  c.appendChild(topo);
+
+  var ac = el('div', 'acoes');
+  var nc = i.feedback.length;
+  var bc = el('button', 'link2', (abertas[i.id] ? '▾ ' : '▸ ') + (nc ? '💬 ' + nc + (nc === 1 ? ' comentário' : ' comentários') : '💬 Dar feedback'));
+  bc.onclick = function () { abertas[i.id] = !abertas[i.id]; desenhar(); };
+  var ba = el('button', 'link2 apagar', 'Apagar'); ba.onclick = function () { apagar(i.id); };
+  ac.appendChild(bc); ac.appendChild(ba);
+  c.appendChild(ac);
+
+  if (abertas[i.id]) {
+    var cm = el('div', 'coment');
+    i.feedback.forEach(function (f) {
+      var it = el('div', 'item'); it.appendChild(el('b', null, f.autor + ': ')); it.appendChild(document.createTextNode(f.texto)); cm.appendChild(it);
+    });
+    var form = el('form');
+    var inp = el('input'); inp.maxLength = 300; inp.placeholder = 'Escreve o teu feedback'; inp.setAttribute('aria-label', 'Feedback');
+    var env = el('button', 'btn sec', 'Enviar'); env.type = 'submit';
+    form.appendChild(inp); form.appendChild(env);
+    form.onsubmit = function (e) { e.preventDefault(); comentar(i.id, inp.value); };
+    cm.appendChild(form); c.appendChild(cm);
+  }
+  return c;
+}
+function desenharLista() {
+  var cont = $('lista'); cont.innerHTML = '';
+  if (!estado.ideias.length) { cont.appendChild(el('div', 'vazio', 'Ainda não há ideias. Escreve a primeira acima.')); return; }
+  estado.ideias.slice().sort(function (a, b) { return a.criada - b.criada; }).forEach(function (i) { cont.appendChild(cartaoIdeia(i)); });
+}
+function desenharVoto() {
+  var v = $('voto'); v.innerHTML = '';
+  if (!estado.nome) { v.appendChild(el('div', 'titulo', 'O teu voto')); v.appendChild(el('div', 'nota', 'Entra com o teu nome para escolher o 1º, 2º e 3º lugar.')); return; }
+  var b = votoAtual();
+  v.appendChild(el('div', 'titulo', 'O teu voto'));
+  var slots = el('div', 'slots');
+  b.forEach(function (id, k) {
+    var i = id != null ? achar(id) : null;
+    var s = el('div', 'slot' + (i ? ' cheio' : ''));
+    s.appendChild(el('b', null, (k + 1) + 'º lugar'));
+    s.appendChild(el('span', null, i ? i.titulo : 'por escolher'));
+    slots.appendChild(s);
+  });
+  v.appendChild(slots);
+  var l = el('div', 'linha2');
+  if (bloqueado()) {
+    l.appendChild(el('div', 'nota', '✓ Voto submetido.'));
+    var a = el('button', 'btn sec', 'Alterar voto'); a.onclick = alterar; l.appendChild(a);
+  } else {
+    var falta = b.filter(function (x) { return x == null; }).length;
+    l.appendChild(el('div', 'nota', estado.ideias.length < 3 ? 'São precisas pelo menos 3 ideias para votar.' : falta ? 'Falta escolher ' + falta + (falta === 1 ? ' lugar.' : ' lugares.') : 'Tudo pronto. Podes submeter.'));
+    if (editando) { var c = el('button', 'btn sec', 'Cancelar'); c.onclick = cancelar; l.appendChild(c); }
+    var s = el('button', 'btn', 'Submeter voto'); s.disabled = falta > 0 || estado.ideias.length < 3; s.onclick = submeter; l.appendChild(s);
+  }
+  v.appendChild(l);
+}
+function desenharPodio() {
+  var sec = $('podioSec'); sec.innerHTML = '';
+  sec.appendChild(el('h2', 'az', '🏆 Pódio'));
+  if (!verPodio) {
+    sec.appendChild(el('p', 'intro', nVotos() + (nVotos() === 1 ? ' voto submetido.' : ' votos submetidos.') + ' Quando o grupo tiver votado, vê as 3 melhores ideias.'));
+    var b = el('button', 'btn', 'Ver pódio'); b.onclick = function () { verPodio = true; desenhar(); }; sec.appendChild(b);
+    return;
+  }
+  var top = resultados().filter(function (x) { return x.p > 0; }).slice(0, 3);
+  if (!top.length) { sec.appendChild(el('div', 'vazio', 'Ainda ninguém submeteu o voto.')); return; }
+  var podio = el('div', 'podio');
+  [1, 0, 2].forEach(function (k) {   // 2º à esquerda, 1º ao centro, 3º à direita
+    var x = top[k]; if (!x) return;
+    var d = el('div', 'lugar l' + (k + 1));
+    d.appendChild(el('div', 'nome', x.i.titulo));
+    d.appendChild(el('div', 'pts', x.p + ' pontos'));
+    var p = el('div', 'pilar'); p.appendChild(el('small', null, ['🥇', '🥈', '🥉'][k])); p.appendChild(document.createTextNode((k + 1) + 'º'));
+    d.appendChild(p); podio.appendChild(d);
+  });
+  sec.appendChild(podio);
+  var ex = top.some(function (x) { return x.i.exemplo; }) && Object.keys(estado.votos).every(function (n) { return n.indexOf('Exemplo') === 0; });
+  sec.appendChild(el('div', 'detalhe', nVotos() + ' voto(s) · 3 pontos para o 1º, 2 para o 2º, 1 para o 3º' + (ex ? ' · dados de exemplo' : '')));
+}
+function desenhar() { desenharPessoa(); desenharLista(); desenharVoto(); desenharPodio(); }
+
+// ---------- Arranque ----------
+carregar();
+var cx = $('novo');
+function ajustar() { cx.style.height = 'auto'; cx.style.height = Math.min(cx.scrollHeight, 200) + 'px'; }
+cx.oninput = ajustar;
+cx.onkeydown = function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('formNovo').requestSubmit(); } };
+$('formNovo').onsubmit = function (e) { e.preventDefault(); adicionar(cx.value); cx.value = ''; ajustar(); cx.focus(); };
+$('btnCopiar').onclick = copiar;
+$('btnCsv').onclick = exportarCsv;
+$('btnVotos').onclick = function () {
+  if (!window.confirm('Apagar todos os votos? As ideias ficam.')) return;
+  estado.votos = {}; estado.rascunhos = {}; editando = false; verPodio = false; guardar(); desenhar();
+};
+$('btnExemplo').onclick = function () { exemplo(); editando = false; verPodio = false; guardar(); desenhar(); aviso('Exemplo reposto.'); };
+$('btnLimpar').onclick = function () {
+  if (estado.ideias.length && !window.confirm('Apagar todas as ideias e votos?')) return;
+  estado.ideias = []; estado.votos = {}; estado.rascunhos = {}; editando = false; verPodio = false; guardar(); desenhar();
+};
+desenhar();
+</script>
+</body>
+</html>
